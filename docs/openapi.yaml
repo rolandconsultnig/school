@@ -1,0 +1,259 @@
+openapi: 3.0.3
+info:
+  title: SchoolPortal API
+  version: 1.0.0
+  description: Nigeria Nursery · Primary · Secondary school platform (Modules 0–12)
+servers:
+  - url: http://localhost:5340/api/v1
+    description: Local development
+tags:
+  - name: Auth
+  - name: Foundation
+  - name: Admissions
+  - name: SIS
+  - name: Finance
+  - name: Attendance
+  - name: LMS
+  - name: HR
+  - name: ID Cards
+  - name: Access
+  - name: Ancillary
+  - name: Analytics
+paths:
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Unified login (staff, student, parent)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string }
+      responses:
+        "200":
+          description: JWT and profile metadata
+  /auth/sso/status:
+    get:
+      tags: [Auth]
+      summary: SSO provider configuration status
+  /auth/google/start:
+    get:
+      tags: [Auth]
+      summary: Start Google OAuth (redirect)
+  /auth/google/callback:
+    get:
+      tags: [Auth]
+      summary: Google OAuth callback
+  /auth/microsoft/start:
+    get:
+      tags: [Auth]
+      summary: Start Microsoft OAuth (redirect)
+  /auth/microsoft/callback:
+    get:
+      tags: [Auth]
+      summary: Microsoft OAuth callback
+  /foundation/bootstrap:
+    get:
+      tags: [Foundation]
+      summary: Campuses, tiers, org (requires Bearer token)
+      security: [{ bearerAuth: [] }]
+  /admissions/inquiries:
+    post:
+      tags: [Admissions]
+      summary: Public admission inquiry
+    get:
+      tags: [Admissions]
+      summary: List inquiries (staff)
+      security: [{ bearerAuth: [] }]
+  /admissions/applicants/register:
+    post:
+      tags: [Admissions]
+      summary: Applicant self-registration
+  /sis/students/{studentId}/profile:
+    get:
+      tags: [SIS]
+      summary: Student 360° profile
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+  /finance/fee-structures:
+    get:
+      tags: [Finance]
+      summary: List fee structures
+      security: [{ bearerAuth: [] }]
+    post:
+      tags: [Finance]
+      summary: Create fee structure
+      security: [{ bearerAuth: [] }]
+  /finance/student-fees/{feeId}/payments/paystack/initialize:
+    post:
+      tags: [Finance]
+      summary: Initialize Paystack checkout for a student fee
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: feeId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+  /finance/payments/paystack/verify/{reference}:
+    get:
+      tags: [Finance]
+      summary: Verify Paystack payment and apply to ledger
+      parameters:
+        - name: reference
+          in: path
+          required: true
+          schema: { type: string }
+  /students/portal/fees/{feeId}/payments/paystack/initialize:
+    post:
+      tags: [Finance]
+      summary: Student-initiated Paystack checkout
+      security: [{ bearerAuth: [] }]
+  /attendance/sessions:
+    post:
+      tags: [Attendance]
+      summary: Create roll-call session
+      security: [{ bearerAuth: [] }]
+    get:
+      tags: [Attendance]
+      summary: List sessions
+      security: [{ bearerAuth: [] }]
+  /lms/courses:
+    get:
+      tags: [LMS]
+      summary: List LMS courses
+      security: [{ bearerAuth: [] }]
+  /lms/courses/{courseId}/gradebook:
+    get:
+      tags: [LMS]
+      summary: Course gradebook (staff)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+  /hr/leave-requests:
+    post:
+      tags: [HR]
+      summary: Create leave request
+      security: [{ bearerAuth: [] }]
+    get:
+      tags: [HR]
+      summary: List leave requests
+      security: [{ bearerAuth: [] }]
+  /hr/payroll-runs:
+    post:
+      tags: [HR]
+      summary: Create payroll run (DRAFT)
+      security: [{ bearerAuth: [] }]
+    get:
+      tags: [HR]
+      summary: List payroll runs
+      security: [{ bearerAuth: [] }]
+  /access/lockdown:
+    post:
+      tags: [Access]
+      summary: Enable or disable campus lockdown
+      security: [{ bearerAuth: [] }]
+  /access/webhook:
+    post:
+      tags: [Access]
+      summary: IoT gate scanner webhook (header X-IoT-Key)
+  /idcard/print-queue:
+    get:
+      tags: [ID Cards]
+      summary: ID cards awaiting print
+      security: [{ bearerAuth: [] }]
+  /idcard/bulk-issue:
+    post:
+      tags: [ID Cards]
+      summary: Bulk issue student ID cards
+      security: [{ bearerAuth: [] }]
+  /ancillary/transport-routes/{id}/gps:
+    post:
+      tags: [Ancillary]
+      summary: Update bus GPS coordinates for a route
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+  /analytics/report-cards/{reportCardId}/html:
+    get:
+      tags: [Analytics]
+      summary: Printable report card HTML
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: reportCardId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+  /parents/portal/dashboard:
+    get:
+      tags: [Foundation]
+      summary: Parent family dashboard (children, fees, attendance)
+      security: [{ bearerAuth: [] }]
+  /admissions/applicants/{id}/interview/schedule:
+    post:
+      tags: [Admissions]
+      summary: Schedule applicant interview
+      security: [{ bearerAuth: [] }]
+  /admissions/applicants/{id}/interview/score:
+    post:
+      tags: [Admissions]
+      summary: Record interview score
+      security: [{ bearerAuth: [] }]
+  /analytics/report-cards/bulk-generate:
+    post:
+      tags: [Analytics]
+      summary: Bulk generate report cards for students in scope
+      security: [{ bearerAuth: [] }]
+  /analytics/report-cards:
+    get:
+      tags: [Analytics]
+      summary: List recent report cards (campus/tier filter)
+      security: [{ bearerAuth: [] }]
+  /finance/ledger/export:
+    get:
+      tags: [Finance]
+      summary: Export fee ledger as CSV
+      security: [{ bearerAuth: [] }]
+  /library/books:
+    get:
+      tags: [Foundation]
+      summary: List library catalog
+      security: [{ bearerAuth: [] }]
+    post:
+      tags: [Foundation]
+      summary: Add library book
+      security: [{ bearerAuth: [] }]
+  /pta/meetings:
+    get:
+      tags: [Foundation]
+      summary: List PTA meetings
+      security: [{ bearerAuth: [] }]
+    post:
+      tags: [Foundation]
+      summary: Create PTA meeting
+      security: [{ bearerAuth: [] }]
+  /exams:
+    get:
+      tags: [LMS]
+      summary: List legacy exams (optional tier/campus query)
+      security: [{ bearerAuth: [] }]
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

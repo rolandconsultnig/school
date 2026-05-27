@@ -1,0 +1,33 @@
+{
+  "rewrites": [
+    { "source": "/login", "destination": "/portal.html" },
+    { "source": "/login/:path*", "destination": "/portal.html" },
+    { "source": "/dashboard", "destination": "/portal.html" },
+    { "source": "/dashboard/:path*", "destination": "/portal.html" },
+    { "source": "/apply", "destination": "/portal.html" },
+    { "source": "/apply/:path*", "destination": "/portal.html" },
+    { "source": "/paystack/:path*", "destination": "/portal.html" },
+    { "source": "/students/:path*", "destination": "/portal.html" },
+    { "source": "/classes/:path*", "destination": "/portal.html" },
+    { "source": "/admissions", "destination": "/portal.html" },
+    { "source": "/attendance", "destination": "/portal.html" },
+    { "source": "/learn/:path*", "destination": "/portal.html" },
+    { "source": "/lms/:path*", "destination": "/portal.html" },
+    { "source": "/teachers", "destination": "/portal.html" },
+    { "source": "/finance", "destination": "/portal.html" },
+    { "source": "/hr", "destination": "/portal.html" },
+    { "source": "/library", "destination": "/portal.html" },
+    { "source": "/access", "destination": "/portal.html" },
+    { "source": "/ancillary", "destination": "/portal.html" },
+    { "source": "/promotion", "destination": "/portal.html" },
+    { "source": "/id-cards", "destination": "/portal.html" },
+    { "source": "/community", "destination": "/portal.html" },
+    { "source": "/settings", "destination": "/portal.html" },
+    { "source": "/messages", "destination": "/portal.html" },
+    { "source": "/children/:path*", "destination": "/portal.html" },
+    { "source": "/gradebook", "destination": "/portal.html" },
+    { "source": "/exams", "destination": "/portal.html" },
+    { "source": "/services/:path*", "destination": "/portal.html" },
+    { "source": "/campus/:path*", "destination": "/portal.html" }
+  ]
+}

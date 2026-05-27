@@ -1,0 +1,9 @@
+node_modules
+.env
+.env.production
+web/.env
+web/.env.production
+web/dist
+.vercel
+uploads/*
+!uploads/.gitkeep
