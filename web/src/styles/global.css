@@ -226,6 +226,59 @@ tbody tr:hover {
   margin-bottom: 1.5rem;
 }
 
+/* ─── Analytics charts ─── */
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem 1rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.chart-card-head h3 {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.chart-card-head span {
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.chart-card-body {
+  flex: 1;
+  min-height: 220px;
+}
+
+.recharts-default-tooltip {
+  border-radius: 8px !important;
+}
+
+.recharts-cartesian-axis-tick-value {
+  fill: var(--muted);
+}
+
 .empty {
   color: var(--muted);
   text-align: center;

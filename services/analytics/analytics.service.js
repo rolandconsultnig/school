@@ -80,6 +80,80 @@ exports.getExecutiveDashboardService = async (query, res) => {
   });
 };
 
+exports.getEnrollmentTrendsService = async (query, res) => {
+  const { campusId, tier } = query;
+  const months = Math.min(Math.max(Number(query.months) || 6, 3), 12);
+
+  const now = new Date();
+  const start = new Date(now.getFullYear(), now.getMonth() - (months - 1), 1);
+
+  const studentWhere = {
+    ...(campusId && { campusId }),
+    ...(tier && { tier }),
+    isWithdrawn: false,
+    createdAt: { gte: start },
+  };
+
+  const [students, payments, inquiries] = await Promise.all([
+    prisma.student.findMany({
+      where: studentWhere,
+      select: { createdAt: true },
+    }),
+    prisma.feePayment.findMany({
+      where: { status: "SUCCESS", createdAt: { gte: start } },
+      select: { createdAt: true, amount: true },
+    }),
+    prisma.admissionInquiry.findMany({
+      where: { createdAt: { gte: start } },
+      select: { createdAt: true },
+    }),
+  ]);
+
+  const bucketKey = (date) => {
+    const d = new Date(date);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+  };
+
+  const buckets = [];
+  const byKey = {};
+  for (let i = 0; i < months; i++) {
+    const d = new Date(now.getFullYear(), now.getMonth() - (months - 1) + i, 1);
+    const b = {
+      key: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`,
+      label: d.toLocaleString("en-US", { month: "short" }),
+      year: d.getFullYear(),
+      newStudents: 0,
+      payments: 0,
+      inquiries: 0,
+    };
+    buckets.push(b);
+    byKey[b.key] = b;
+  }
+
+  for (const s of students) {
+    const b = byKey[bucketKey(s.createdAt)];
+    if (b) b.newStudents += 1;
+  }
+  for (const p of payments) {
+    const b = byKey[bucketKey(p.createdAt)];
+    if (b) b.payments += Number(p.amount || 0);
+  }
+  for (const q of inquiries) {
+    const b = byKey[bucketKey(q.createdAt)];
+    if (b) b.inquiries += 1;
+  }
+
+  return responseStatus(res, 200, "success", {
+    months: buckets,
+    totals: {
+      newStudents: buckets.reduce((s, b) => s + b.newStudents, 0),
+      payments: buckets.reduce((s, b) => s + b.payments, 0),
+      inquiries: buckets.reduce((s, b) => s + b.inquiries, 0),
+    },
+    generatedAt: new Date().toISOString(),
+  });
+};
+
 exports.generateReportCardService = async (studentId, academicTermId, res) => {
   const student = await prisma.student.findUnique({
     where: { id: studentId },

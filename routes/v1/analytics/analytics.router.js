@@ -3,6 +3,7 @@ const analyticsRouter = express.Router();
 const protectedRoute = require("../../../middlewares/protectedRoute");
 const {
   getExecutiveDashboardController,
+  getEnrollmentTrendsController,
   generateReportCardController,
   listReportCardsController,
   listRecentReportCardsController,
@@ -16,6 +17,12 @@ analyticsRouter.get(
   "/analytics/executive-dashboard",
   [...readDash],
   getExecutiveDashboardController
+);
+
+analyticsRouter.get(
+  "/analytics/trends",
+  [...readDash],
+  getEnrollmentTrendsController
 );
 
 analyticsRouter.post(

@@ -1,6 +1,7 @@
 const responseStatus = require("../../handlers/responseStatus.handler");
 const {
   getExecutiveDashboardService,
+  getEnrollmentTrendsService,
   generateReportCardService,
   listReportCardsService,
   listRecentReportCardsService,
@@ -11,6 +12,14 @@ const {
 exports.getExecutiveDashboardController = async (req, res) => {
   try {
     await getExecutiveDashboardService(req.query, res);
+  } catch (e) {
+    responseStatus(res, 400, "failed", e.message);
+  }
+};
+
+exports.getEnrollmentTrendsController = async (req, res) => {
+  try {
+    await getEnrollmentTrendsService(req.query, res);
   } catch (e) {
     responseStatus(res, 400, "failed", e.message);
   }

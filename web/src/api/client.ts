@@ -354,10 +354,45 @@ export const attendanceDetailApi = {
 };
 
 // ─── Analytics ───
+export type ExecutiveDashboard = {
+  students: number;
+  teachers: number;
+  activeApplicants: number;
+  admissionInquiries: number;
+  attendanceSessions: number;
+  lmsCourses: number;
+  overdueFees: number;
+  pendingLeaveRequests: number;
+  newStudentsLast30Days: number;
+  paymentsLast30Days: { count: number; totalAmount: number };
+  studentsByTier: { tier: string; count: number }[];
+  generatedAt: string;
+};
+
+export type TrendPoint = {
+  key: string;
+  label: string;
+  year: number;
+  newStudents: number;
+  payments: number;
+  inquiries: number;
+};
+
+export type TrendsResponse = {
+  months: TrendPoint[];
+  totals: { newStudents: number; payments: number; inquiries: number };
+  generatedAt: string;
+};
+
 export const analyticsApi = {
   executiveDashboard: (token: string, c?: string, t?: SchoolTier) =>
-    request<Record<string, number | string>>(
+    request<ExecutiveDashboard>(
       "/analytics/executive-dashboard",
+      ctx(token, c, t)
+    ),
+  trends: (token: string, months = 6, c?: string, t?: SchoolTier) =>
+    request<TrendsResponse>(
+      `/analytics/trends?months=${months}`,
       ctx(token, c, t)
     ),
   generateReportCard: (

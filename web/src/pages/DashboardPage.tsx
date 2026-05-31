@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { BookOpen, CalendarCheck, UserPlus, Users } from "lucide-react";
+import { BanknoteIcon, BookOpen, UserPlus, Users } from "lucide-react";
 import {
   admissionsApi,
   analyticsApi,
@@ -8,11 +8,20 @@ import {
   lmsApi,
   parentApi,
   studentsApi,
+  type ExecutiveDashboard,
+  type TrendsResponse,
 } from "../api/client";
 import { useApiContext } from "../context/TenantContext";
 import { useAuth } from "../context/AuthContext";
 import { StatCard } from "../components/StatCard";
 import { PageHeader } from "../components/PageHeader";
+import {
+  CollectionGaugeChart,
+  EnrollmentTrendChart,
+  OperationsBarChart,
+  PaymentsTrendChart,
+  TierPieChart,
+} from "../components/DashboardCharts";
 
 export function DashboardPage() {
   const { user, isStudent, isParent } = useAuth();
@@ -26,12 +35,22 @@ export function DashboardPage() {
     payments30d: 0,
   });
   const [bulkMsg, setBulkMsg] = useState("");
+  const [dashboard, setDashboard] = useState<ExecutiveDashboard | null>(null);
+  const [trends, setTrends] = useState<TrendsResponse | null>(null);
   const [parentSummary, setParentSummary] = useState<{
     children: number;
     name?: string;
     childRows?: Record<string, unknown>[];
   } | null>(null);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (isStudent || isParent || !ctx.token) return;
+    analyticsApi
+      .trends(ctx.token, 6, ctx.campusId, ctx.tier)
+      .then(setTrends)
+      .catch(() => setTrends(null));
+  }, [ctx.token, ctx.campusId, ctx.tier, isStudent, isParent]);
 
   useEffect(() => {
     if (isParent && user?.token) {
@@ -55,14 +74,14 @@ export function DashboardPage() {
     analyticsApi
       .executiveDashboard(ctx.token, ctx.campusId, ctx.tier)
       .then((d) => {
-        const pay = d.paymentsLast30Days as { totalAmount?: number } | undefined;
+        setDashboard(d);
         setStats({
           students: Number(d.students ?? 0),
           courses: Number(d.lmsCourses ?? 0),
           inquiries: Number(d.admissionInquiries ?? 0),
           sessions: Number(d.attendanceSessions ?? 0),
           newStudents30d: Number(d.newStudentsLast30Days ?? 0),
-          payments30d: Number(pay?.totalAmount ?? 0),
+          payments30d: Number(d.paymentsLast30Days?.totalAmount ?? 0),
         });
       })
       .catch(() => {
@@ -178,6 +197,7 @@ export function DashboardPage() {
           icon={Users}
           href="/students"
           accent="green"
+          trend={stats.newStudents30d ? `+${stats.newStudents30d} in 30 days` : undefined}
         />
         <StatCard
           label="LMS courses"
@@ -194,23 +214,32 @@ export function DashboardPage() {
           accent="amber"
         />
         <StatCard
-          label="Attendance sessions"
-          value={stats.sessions}
-          icon={CalendarCheck}
-          href="/attendance"
+          label="Payments (30d)"
+          value={`₦${stats.payments30d.toLocaleString()}`}
+          icon={BanknoteIcon}
           accent="violet"
         />
       </div>
+
+      {(dashboard || trends) && (
+        <div className="chart-grid">
+          {trends && <EnrollmentTrendChart trends={trends} />}
+          {dashboard && <TierPieChart data={dashboard} />}
+          {trends && <PaymentsTrendChart trends={trends} />}
+          {dashboard && <OperationsBarChart data={dashboard} />}
+          {dashboard && <CollectionGaugeChart data={dashboard} />}
+        </div>
+      )}
+
       {bulkMsg && (
         <div className="card" style={{ marginBottom: "1rem", color: "var(--primary)" }}>
           {bulkMsg}
         </div>
       )}
       <div className="card" style={{ marginBottom: "1rem" }}>
-        <h3 style={{ marginTop: 0 }}>Analytics (30 days)</h3>
-        <p style={{ margin: "0.25rem 0" }}>
-          New students: <strong>{stats.newStudents30d}</strong> · Payments collected:{" "}
-          <strong>₦{stats.payments30d.toLocaleString()}</strong>
+        <h3 style={{ marginTop: 0 }}>Report cards</h3>
+        <p style={{ margin: "0.25rem 0", color: "var(--muted)", fontSize: "0.9rem" }}>
+          Generate and print report cards for the current campus and tier.
         </p>
         <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginTop: "0.75rem" }}>
           <button
