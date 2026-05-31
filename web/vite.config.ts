@@ -86,16 +86,22 @@ export default defineConfig({
     },
   },
   server: {
-    port: 5345,
+    port: 3905,
     proxy: {
       "/api": {
-        target: "http://localhost:5340",
+        target: "http://localhost:3900",
         changeOrigin: true,
       },
       "/uploads": {
-        target: "http://localhost:5340",
+        target: "http://localhost:3900",
         changeOrigin: true,
       },
     },
+  },
+  preview: {
+    port: 3905,
+    host: "127.0.0.1",
+    // Served behind nginx; trust the upstream Host header (IP or domain).
+    allowedHosts: true,
   },
 });

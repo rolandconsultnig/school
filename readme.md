@@ -65,7 +65,7 @@ npm run db:migrate
 npm run db:seed
 ```
 
-5. Start the API (port **5340**) and React app (port **5345**):
+5. Start the API (port **3900**) and React app (port **3905**):
 
 ```sh
 npm run dev
@@ -73,7 +73,7 @@ npm run dev
 
 To run only the API or only the UI: `npm run dev:api` or `npm run dev:web`.
 
-Copy `web/.env.example` to `web/.env` and set `VITE_API_URL=http://localhost:5340` if needed.
+Copy `web/.env.example` to `web/.env` and set `VITE_API_URL=http://localhost:3900` if needed.
 
 **Demo logins** (after seed): `superadmin@school.local` / `SuperAdmin@123`, `student@school.local` / `Student@123`, `parent@school.local` / `Parent@123`
 
@@ -88,7 +88,7 @@ Copy `web/.env.example` to `web/.env` and set `VITE_API_URL=http://localhost:534
 | [docs/API_QUICKSTART.md](docs/API_QUICKSTART.md) | Bootstrap, auth, and key endpoints |
 | [docs/openapi.yaml](docs/openapi.yaml) | OpenAPI 3 spec (also at `GET /api/v1/openapi.yaml`) |
 | [docs/FRONTEND.md](docs/FRONTEND.md) | React app setup |
-| [docs/DEPLOY_UBUNTU_PRODUCTION.md](docs/DEPLOY_UBUNTU_PRODUCTION.md) | Ubuntu 24 production (`/school` subpath) |
+| [docs/DEPLOY_UBUNTU_PRODUCTION.md](docs/DEPLOY_UBUNTU_PRODUCTION.md) | **Full beginner guide:** Ubuntu 24 production at `/school` |
 | [docs/later.md](docs/later.md) | Remaining backlog and sprint status |
 | [docs/PHASE_BC_DELIVERY.md](docs/PHASE_BC_DELIVERY.md) | Phase B & C endpoints and migration |
 

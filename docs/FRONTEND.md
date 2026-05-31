@@ -4,7 +4,7 @@ React + Vite app in `web/`, styled after **School ERP Client** (sidebar, role na
 
 ## Run locally
 
-From the repo root (starts API on **5340** and Vite on **5345**):
+From the repo root (starts API on **3900** and Vite on **3905**):
 
 ```sh
 cd c:\Projects\SchoolPortal
@@ -14,7 +14,7 @@ npm run dev
 
 UI only: `npm run dev:web`. API only: `npm run dev:api`.
 
-Open http://localhost:5345 for the **De Ayo** public landing page. The school portal (login, dashboard, modules) lives at `/login`, `/dashboard`, `/apply`, etc. Vite proxies `/api` and `/uploads` to port **5340**.
+Open http://localhost:3905 for the **De Ayo** public landing page. The school portal (login, dashboard, modules) lives at `/login`, `/dashboard`, `/apply`, etc. Vite proxies `/api` and `/uploads` to port **3900**.
 
 Landing page source: `deayo-kiddies-college.html` (copied to `web/index.html`). React app shell: `web/portal.html`.
 
@@ -52,7 +52,7 @@ npm run build:web
 Serve `web/dist` behind nginx or Express static. If the API is on another host, set in `web/.env`:
 
 ```env
-VITE_API_URL=http://localhost:5340
+VITE_API_URL=http://localhost:3900
 ```
 
 Public admissions (no staff login): `/apply`, `/apply/register`, `/apply/login`, `/apply/portal`.

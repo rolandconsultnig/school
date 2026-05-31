@@ -1,5 +1,12 @@
 node_modules
 .env
+
+# Cursor / AI conversations (do not commit chat history)
+.cursor/
+agent-transcripts/
+conversations/
+**/conversations/
+*.jsonl
 .env.production
 web/.env
 web/.env.production

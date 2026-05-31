@@ -26,7 +26,7 @@ One backend serving multiple campuses, three academic tiers, RBAC for 10+ roles,
 | Module 5 Attendance (roll-call, timetable, door import) | ✅ Phase D MVP |
 | Module 6 LMS (courses, assignments, gradebook, live classes) | ✅ Phase D MVP |
 | Modules 3–4, 8–12 (MVP slices) | ✅ Delivered (see IMPLEMENTATION_STATUS.md) |
-| Frontend (`web/`) | ✅ React app on ports 5340/5345 |
+| Frontend (`web/`) | ✅ React app on ports 3900/3905 |
 | Tests / OpenAPI | 🟡 Partial (16+ HTTP integration tests, schema tests, expanded OpenAPI) |
 
 ---

@@ -1,10 +1,10 @@
 # Deployment notes
 
-**Ubuntu 24 production (shared server, path `/school`, IP/host example):** see [DEPLOY_UBUNTU_PRODUCTION.md](./DEPLOY_UBUNTU_PRODUCTION.md).
+**Ubuntu 24 production (step-by-step for beginners, shared server, path `/school`):** see [DEPLOY_UBUNTU_PRODUCTION.md](./DEPLOY_UBUNTU_PRODUCTION.md).
 
 ## API (Node + PostgreSQL)
 
-- Set `DATABASE_URL`, `JWT_SECRET_KEY`, `PORT` (default **5340**).
+- Set `DATABASE_URL`, `JWT_SECRET_KEY`, `PORT` (default **3900**).
 - Run migrations: `npm run db:push` and `npm run db:seed`.
 - Start API: `npm run start` or `npm run dev`.
 - Optional: `npm run worker:notifications` for SMS/email queue.

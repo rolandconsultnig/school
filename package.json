@@ -15,7 +15,7 @@
     "db:seed": "node prisma/seed.js",
     "worker:notifications": "node workers/notificationWorker.js",
     "dev:web": "npm run dev --prefix web",
-    "build:web": "npm run build --prefix web",
+    "build:web": "npm ci --prefix web && npm run build --prefix web",
     "test": "node --test tests/*.test.js"
   },
   "repository": {

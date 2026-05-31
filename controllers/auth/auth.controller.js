@@ -41,7 +41,7 @@ exports.googleSsoCallbackController = async (req, res) => {
     const tokens = await googleOAuth.exchangeCode(code);
     const profile = await googleOAuth.fetchProfile(tokens.access_token);
     const frontend =
-      process.env.FRONTEND_URL || "http://localhost:5345";
+      process.env.FRONTEND_URL || "http://localhost:3905";
     const returnPath = req.query.state && req.query.state !== "schoolportal"
       ? Buffer.from(String(req.query.state), "base64url").toString("utf8")
       : "/";
@@ -72,7 +72,7 @@ exports.googleSsoCallbackController = async (req, res) => {
       `${frontend}/login?sso_token=${token}&profile_type=${profileType}&return=${encodeURIComponent(returnPath)}`
     );
   } catch (e) {
-    const frontend = process.env.FRONTEND_URL || "http://localhost:5345";
+    const frontend = process.env.FRONTEND_URL || "http://localhost:3905";
     return res.redirect(
       `${frontend}/login?sso_error=${encodeURIComponent(e.message)}`
     );
@@ -99,7 +99,7 @@ exports.microsoftSsoCallbackController = async (req, res) => {
 
     const tokens = await microsoftOAuth.exchangeCode(code);
     const profile = await microsoftOAuth.fetchProfile(tokens.access_token);
-    const frontend = process.env.FRONTEND_URL || "http://localhost:5345";
+    const frontend = process.env.FRONTEND_URL || "http://localhost:3905";
     const returnPath =
       req.query.state && req.query.state !== "schoolportal"
         ? Buffer.from(String(req.query.state), "base64url").toString("utf8")
@@ -129,7 +129,7 @@ exports.microsoftSsoCallbackController = async (req, res) => {
       `${frontend}/login?sso_token=${token}&profile_type=${profileType}&return=${encodeURIComponent(returnPath)}`
     );
   } catch (e) {
-    const frontend = process.env.FRONTEND_URL || "http://localhost:5345";
+    const frontend = process.env.FRONTEND_URL || "http://localhost:3905";
     return res.redirect(
       `${frontend}/login?sso_error=${encodeURIComponent(e.message)}`
     );

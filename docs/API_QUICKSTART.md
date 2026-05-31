@@ -1,6 +1,6 @@
 # API Quickstart (Phase A delivered)
 
-Base URL: `http://localhost:5340/api/v1`
+Base URL: `http://localhost:3900/api/v1`
 
 ## 1. Database setup
 
@@ -89,7 +89,7 @@ Authorization: Bearer <token>
 POST /api/v1/students/portal/fees/:feeId/payments/paystack/initialize
 Authorization: Bearer <student-token>
 
-{ "callbackUrl": "http://localhost:5345/paystack/callback" }
+{ "callbackUrl": "http://localhost:3905/paystack/callback" }
 ```
 
 ```http
@@ -100,4 +100,4 @@ Set `PAYSTACK_SECRET_KEY` and `PAYSTACK_PUBLIC_KEY` in `.env` for live checkout.
 
 ## 7. OpenAPI
 
-`GET http://localhost:5340/api/v1/openapi.yaml`
+`GET http://localhost:3900/api/v1/openapi.yaml`

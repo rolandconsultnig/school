@@ -14,7 +14,7 @@ test("paystack initialize returns demo authorization url without secret", async 
       email: "student@school.local",
       amount: 5000,
       reference: "SP-test-001",
-      callbackUrl: "http://localhost:5345/paystack/callback",
+      callbackUrl: "http://localhost:3905/paystack/callback",
     });
     assert.equal(result.demo, true);
     assert.ok(result.authorization_url.includes("SP-test-001"));
