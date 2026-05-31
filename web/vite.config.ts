@@ -1,5 +1,5 @@
 import path from "node:path";
-import { defineConfig, type Plugin } from "vite";
+import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 
 /** App routes served by portal.html (React SPA), not the static landing at /. */
@@ -49,11 +49,20 @@ function isAssetOrApi(url: string) {
   );
 }
 
-function portalFallback(): Plugin {
+/**
+ * SPA fallback that is base-path aware. When the app is served under a base
+ * (e.g. `/school/`), incoming URLs include that prefix, so we strip it before
+ * matching portal routes and re-add it when rewriting to portal.html.
+ */
+function portalFallback(base: string): Plugin {
+  const prefix = base.endsWith("/") ? base.slice(0, -1) : base; // "/school" or ""
   const rewrite = (req: { url?: string }) => {
-    const url = (req.url ?? "").split("?")[0];
-    if (!url || isAssetOrApi(url)) return;
-    if (isPortalRoute(url)) req.url = "/portal.html";
+    const raw = (req.url ?? "").split("?")[0];
+    if (!raw) return;
+    const appPath =
+      prefix && raw.startsWith(prefix) ? raw.slice(prefix.length) || "/" : raw;
+    if (isAssetOrApi(appPath)) return;
+    if (isPortalRoute(appPath)) req.url = `${prefix}/portal.html`;
   };
   return {
     name: "portal-fallback",
@@ -72,36 +81,41 @@ function portalFallback(): Plugin {
   };
 }
 
-const base = process.env.VITE_BASE_PATH || "/";
+export default defineConfig(({ mode }) => {
+  // Load .env / .env.[mode] from this folder so VITE_BASE_PATH is available
+  // in the config (Vite does NOT put env vars on process.env automatically).
+  const env = loadEnv(mode, __dirname, "");
+  const base = env.VITE_BASE_PATH || process.env.VITE_BASE_PATH || "/";
 
-export default defineConfig({
-  base,
-  plugins: [react(), portalFallback()],
-  build: {
-    rollupOptions: {
-      input: {
-        index: path.resolve(__dirname, "index.html"),
-        portal: path.resolve(__dirname, "portal.html"),
+  return {
+    base,
+    plugins: [react(), portalFallback(base)],
+    build: {
+      rollupOptions: {
+        input: {
+          index: path.resolve(__dirname, "index.html"),
+          portal: path.resolve(__dirname, "portal.html"),
+        },
       },
     },
-  },
-  server: {
-    port: 3905,
-    proxy: {
-      "/api": {
-        target: "http://localhost:3900",
-        changeOrigin: true,
-      },
-      "/uploads": {
-        target: "http://localhost:3900",
-        changeOrigin: true,
+    server: {
+      port: 3905,
+      proxy: {
+        "/api": {
+          target: "http://localhost:3900",
+          changeOrigin: true,
+        },
+        "/uploads": {
+          target: "http://localhost:3900",
+          changeOrigin: true,
+        },
       },
     },
-  },
-  preview: {
-    port: 3905,
-    host: "127.0.0.1",
-    // Served behind nginx; trust the upstream Host header (IP or domain).
-    allowedHosts: true,
-  },
+    preview: {
+      port: 3905,
+      host: "127.0.0.1",
+      // Served behind nginx; trust the upstream Host header (IP or domain).
+      allowedHosts: true,
+    },
+  };
 });
